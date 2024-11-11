@@ -1,0 +1,26 @@
+model:
+  name: 'DES_V1'
+  pretrain: 'google-t5/t5-small'
+  resume: 'ckpt/checkpoint-63900'
+  train_loop_type: 'huggingface' # or Pytorch
+  do_eval: True
+  CUDA_VISIBLE_DEVICES: '0'
+  output_dir: 'path/to/output_dir'
+  num_train_epochs: 3
+  per_device_train_batch_size: 8
+  per_device_eval_batch_size: 8
+  warmup_steps: 500
+  weight_decay: 0.01
+  logging_dir: 'path/to/logging_dir'
+  logging_steps: 100
+  save_steps: 500
+  evaluation_strategy: 'steps'
+  eval_steps: 500
+  save_total_limit: 3
+  load_best_model_at_end: True
+  metric_for_best_model: 'accuracy'
+  greater_is_better: True
+  report_to: 'tensorboard'
+  run_name: 'experiment_name'
+  seed: 42
+  disable_tqdm: False

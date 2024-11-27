@@ -52,8 +52,8 @@ print("Eval Labels Shape:", eval_labels.shape)
 from torch.utils.data import DataLoader
 
 # Define train and eval datasets
-train_dataset = TimeSeriesDataset(train_features, train_labels,4)
-eval_dataset = TimeSeriesDataset(eval_features, eval_labels,3)
+train_dataset = TimeSeriesDataset(train_features, train_labels,1)
+eval_dataset = TimeSeriesDataset(eval_features, eval_labels,2)
 
 # Optional: Create DataLoaders for manual training (if not using Trainer)
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)

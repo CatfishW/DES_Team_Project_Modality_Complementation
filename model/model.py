@@ -7,6 +7,7 @@ class TimeSeriesTransformer(PreTrainedModel):
     def __init__(self, config, num_features, num_classes):
         super().__init__(config)
         self.embedding = nn.Linear(num_features, config.hidden_size)
+        self.input_proj = nn.Linear(config.hidden_size, config.hidden_size)
         self.transformer = BertModel(config)
         self.classifier = nn.Linear(config.hidden_size, num_classes)
         self.dropout = nn.Dropout(config.hidden_dropout_prob)
@@ -19,6 +20,7 @@ class TimeSeriesTransformer(PreTrainedModel):
             #pad
             input_ids = torch.cat([input_ids, torch.zeros(input_ids.size(0), input_ids.size(1), self.num_features - input_ids.size(-1)).to(input_ids.device)], dim=-1)
         embeddings = self.embedding(input_ids)  # [batch_size, seq_len, hidden_size]
+        embeddings = self.input_proj(embeddings)  # [batch_size, seq_len, hidden_size]
         attention_mask = torch.ones(embeddings.size()[:2]).to(input_ids.device)  # Mask if needed
         transformer_output = self.transformer(inputs_embeds=embeddings, attention_mask=attention_mask)
         cls_output = transformer_output.last_hidden_state[:, 0, :]  # Use CLS token output

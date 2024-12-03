@@ -13,6 +13,7 @@ class TimeSeriesTransformer(PreTrainedModel):
         self.dropout = nn.Dropout(config.hidden_dropout_prob)
         self.num_features = num_features
         self.loss_fn = nn.CrossEntropyLoss()
+
     
     def forward(self,input_ids=None,labels=None):
         # x: [batch_size, seq_len, num_features]

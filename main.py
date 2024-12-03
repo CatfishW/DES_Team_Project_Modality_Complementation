@@ -1,4 +1,4 @@
-from transformers import Trainer, TrainingArguments
+from transformers import Trainer, TrainingArguments,AutoModelForSequenceClassification
 from engine import train_dataset, eval_dataset
 import torch
 from model.model import model
@@ -7,15 +7,14 @@ training_args = TrainingArguments(
     output_dir="./results",
     evaluation_strategy="epoch",
     save_strategy="epoch",
-    learning_rate=1e-4,
-    per_device_train_batch_size=32,
+    learning_rate=5e-4,
+    per_device_train_batch_size=64,
     per_device_eval_batch_size=32,
-    num_train_epochs=10,
+    num_train_epochs=150,
     weight_decay=0.01,
     logging_dir="./logs",
     logging_steps=10,
     save_total_limit=2,
-    load_best_model_at_end=True,
     metric_for_best_model="accuracy",
 )
 
@@ -36,6 +35,7 @@ trainer = Trainer(
     eval_dataset=eval_dataset,
     tokenizer=None,  # Not required for time-series data
     compute_metrics=compute_metrics,
+    
 )
 
 # Train the model

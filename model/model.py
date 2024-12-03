@@ -2,6 +2,7 @@ import torch
 from torch import nn
 from transformers import PreTrainedModel, BertConfig, BertModel
 
+
 # Define a custom model for time-series classification
 class TimeSeriesTransformer(PreTrainedModel):
     def __init__(self, config, num_features, num_classes):

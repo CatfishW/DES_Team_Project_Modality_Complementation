@@ -11,9 +11,11 @@ class TimeSeriesTransformer(PreTrainedModel):
         self.input_proj = nn.Linear(config.hidden_size, config.hidden_size)
         self.transformer = BertModel(config)
         self.classifier = nn.Linear(config.hidden_size, num_classes)
+        self.num_classes = num_classes
         self.dropout = nn.Dropout(config.hidden_dropout_prob)
         self.num_features = num_features
         self.loss_fn = nn.CrossEntropyLoss()
+        self.loss_bce = nn.BCEWithLogitsLoss()
 
     
     def forward(self,input_ids=None,labels=None):
@@ -28,13 +30,17 @@ class TimeSeriesTransformer(PreTrainedModel):
         cls_output = transformer_output.last_hidden_state[:, 0, :]  # Use CLS token output
         logits = self.classifier(self.dropout(cls_output))  # [batch_size, num_classes]
         if labels is not None:
-            loss = self.loss_fn(logits, labels)
-            return {"loss": loss, "logits": logits}
+            if self.num_classes == 1:
+                loss = self.loss_bce(logits.view(-1), labels.view(-1).float())
+                return {"loss": loss, "logits": logits}
+            else:
+                loss = self.loss_fn(logits, labels)
+                return {"loss": loss, "logits": logits}
         return {"logits": logits}
 
 # Configuration
-num_features = 20  # Replace with the number of features in your dataset
-num_classes = 5    # Adjust to your number of classes
+num_features = 30  # Replace with the number of features in your dataset
+num_classes = 1    # Adjust to your number of classes
 config = BertConfig(hidden_size=128, num_attention_heads=4, num_hidden_layers=2, hidden_dropout_prob=0.1)
 
 # Initialize model

@@ -7,11 +7,30 @@ from safetensors.torch import load_file
 # state_dict = load_file(weights_path)  # Load the weights
 # model.load_state_dict(state_dict)
 # Training arguments
+class CustomTrainer(Trainer):
+    def get_train_dataloader(self):
+        return torch.utils.data.DataLoader(
+            self.train_dataset,
+            batch_size=self.args.train_batch_size,
+            shuffle=True,  # Enalbe shuffling here
+            collate_fn=self.data_collator,
+            drop_last=self.args.dataloader_drop_last,
+            num_workers=self.args.dataloader_num_workers,
+        )
+    def get_eval_dataloader(self):
+        return torch.utils.data.DataLoader(
+            self.eval_dataset,
+            batch_size=self.args.eval_batch_size,
+            shuffle=False,  # Disable shuffling here
+            collate_fn=self.data_collator,
+            drop_last=self.args.dataloader_drop_last,
+            num_workers=self.args.dataloader_num_workers,
+        )
 training_args = TrainingArguments(
     output_dir="./results",
     evaluation_strategy="epoch",
     save_strategy="epoch",
-    learning_rate=5e-4,
+    learning_rate=2e-4,
     per_device_train_batch_size=64,
     per_device_eval_batch_size=32,
     num_train_epochs=150,
@@ -32,14 +51,13 @@ def compute_metrics(eval_pred):
     return {"accuracy": acc}
 
 # Initialize the Trainer
-trainer = Trainer(
+trainer = CustomTrainer(
     model=model,
     args=training_args,
     train_dataset=train_dataset,
     eval_dataset=eval_dataset,
     tokenizer=None,  # Not required for time-series data
     compute_metrics=compute_metrics,
-    
 )
 
 # Train the model

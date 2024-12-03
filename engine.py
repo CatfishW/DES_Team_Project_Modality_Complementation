@@ -56,8 +56,8 @@ train_features = data.drop(columns=["Meditation","F","block"]).values  # Replace
 train_labels = data["F"].values  # Target labels
 eval_features = data_eval.drop(columns=["Meditation","F","block"]).values
 eval_labels = data_eval["F"].values
-train_features, train_labels = preprocess_and_create_sequences(train_features, train_labels, seq_len=50)
-eval_features, eval_labels = preprocess_and_create_sequences(eval_features, eval_labels, seq_len=50)
+train_features, train_labels = preprocess_and_create_sequences(train_features, train_labels, seq_len=100)
+eval_features, eval_labels = preprocess_and_create_sequences(eval_features, eval_labels, seq_len=100)
 
 #from sklearn.model_selection import train_test_split
 # train_features, eval_features, train_labels, eval_labels = train_test_split(

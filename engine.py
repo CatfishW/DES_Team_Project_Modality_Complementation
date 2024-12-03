@@ -10,6 +10,9 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+
 def preprocess_and_create_sequences(features, labels, seq_len=50):
     """
     Preprocess features by normalizing and creating sequences for time-series data.
@@ -35,8 +38,10 @@ def preprocess_and_create_sequences(features, labels, seq_len=50):
     sequence_labels = []
 
     for i in range(len(features) - seq_len + 1):
-        sequences.append(features[i : i + seq_len])
-        sequence_labels.append(labels[i + seq_len - 1])
+        window_labels = labels[i : i + seq_len]
+        if np.all(window_labels == window_labels[0]):  # Check if all labels in the window are the same
+            sequences.append(features[i : i + seq_len])
+            sequence_labels.append(window_labels[0])
 
     sequences = np.array(sequences)  # Shape: [num_sequences, seq_len, num_features]
     sequence_labels = np.array(sequence_labels)  # Shape: [num_sequences]

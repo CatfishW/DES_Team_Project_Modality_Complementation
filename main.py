@@ -3,9 +3,9 @@ from engine import train_dataset, eval_dataset
 import torch
 from model.model import model
 from safetensors.torch import load_file
-weights_path = "results/checkpoint-22219/model.safetensors"
-state_dict = load_file(weights_path)  # Load the weights
-model.load_state_dict(state_dict)
+# weights_path = "results/checkpoint-22219/model.safetensors"
+# state_dict = load_file(weights_path)  # Load the weights
+# model.load_state_dict(state_dict)
 # Training arguments
 training_args = TrainingArguments(
     output_dir="./results",

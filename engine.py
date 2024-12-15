@@ -48,26 +48,39 @@ def preprocess_and_create_sequences(features, labels, seq_len=50):
 
     return sequences, sequence_labels
 # Load CSV data
-file_path = "./dataset/MEFAR_train.csv"
-eval_file_path = "./dataset/MEFAR_test.csv"
+# file_path = "./dataset/MEFAR_train.csv"
+# eval_file_path = "./dataset/MEFAR_test.csv"
+file_path = "./dataset/OD_train.csv"
 data = pd.read_csv(file_path)
-data_eval = pd.read_csv(eval_file_path)
 # Display the first few rows
 print(data.head())
 import numpy as np
 
 # Separate features and labels
-train_features = data.drop(columns=["Meditation","F","block"]).values  # Replace "fatigue" with your label column
-train_labels = data["F"].values  # Target labels
-eval_features = data_eval.drop(columns=["Meditation","F","block"]).values
-eval_labels = data_eval["F"].values
-train_features, train_labels = preprocess_and_create_sequences(train_features, train_labels, seq_len=100)
-eval_features, eval_labels = preprocess_and_create_sequences(eval_features, eval_labels, seq_len=100)
+# train_features = data.drop(columns=["Meditation","F","block"]).values  # Replace "fatigue" with your label column
+# train_labels = data["F"].values  # Target labels
+# eval_features = data_eval.drop(columns=["Meditation","F","block"]).values
+# eval_labels = data_eval["F"].values
+# Separate features and labels
+features = data.drop(columns=["fatigue","F","block","time"]).values  # Replace "fatigue" with your label column
+labels = data["fatigue"].values  # Target labels
+from sklearn.model_selection import train_test_split
+seq_len = 100
+# Create sequences
+sequences = []
+sequence_labels = []
+for i in range(len(features) - seq_len + 1):
+    sequences.append(features[i : i + seq_len])
+    sequence_labels.append(labels[i + seq_len - 1])
+sequences = np.array(sequences)  # Shape: [num_sequences, seq_len, num_features]
+sequence_labels = np.array(sequence_labels)  # Shape: [num_sequences]
+train_features, eval_features, train_labels, eval_labels = train_test_split(
+    sequences, sequence_labels, test_size=0.2, random_state=42
+)
+# train_features, train_labels = preprocess_and_create_sequences(train_features, train_labels, seq_len=100)
+# eval_features, eval_labels = preprocess_and_create_sequences(eval_features, eval_labels, seq_len=100)
 
-#from sklearn.model_selection import train_test_split
-# train_features, eval_features, train_labels, eval_labels = train_test_split(
-#     sequences, sequence_labels, test_size=0.2, random_state=42
-# )
+
 
 # Print dataset shapes for verification
 print("Train Features Shape:", train_features.shape)

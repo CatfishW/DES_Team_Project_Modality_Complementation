@@ -17,7 +17,7 @@ class CustomTrainer(Trainer):
             drop_last=self.args.dataloader_drop_last,
             num_workers=self.args.dataloader_num_workers,
         )
-    def get_eval_dataloader(self):
+    def get_eval_dataloader(self,eval_dataset):
         return torch.utils.data.DataLoader(
             self.eval_dataset,
             batch_size=self.args.eval_batch_size,
